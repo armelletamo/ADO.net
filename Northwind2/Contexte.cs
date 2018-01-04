@@ -12,14 +12,13 @@ public class Contexte
         var Clients = new List<Client>();
 
         var cmd1 = new SqlCommand();
-        cmd1.CommandText = @"select  od.ProductId,c.customerid, c.CompanyName,
- o.OrderId, o.OrderDate, o.shippeddate, o.Freight, isnull(sum(od.Quantity*(1-od.Discount)*UnitPrice),0) MontantTotal
+        cmd1.CommandText = @"select  c.customerid, od.orderid, c.CompanyName, od.productid,
+ o.OrderDate, o.shippeddate, o.Freight, isnull(sum(od.Quantity*(1-od.Discount)*UnitPrice),0) MontantTotal
 from Customer c
 left outer join Orders o on o.CustomerId=c.CustomerId
 left outer join OrderDetail od on od.OrderId=o.OrderId
-
-group by od.ProductId,c.customerid, c.CompanyName,
- o.OrderId, o.OrderDate, o.shippeddate, o.Freight
+group by c.customerid, od.orderid, c.CompanyName, od.productid,
+ o.OrderDate, o.shippeddate, o.Freight
 order by 1,2";
 
         using (var cnx1 = new SqlConnection(Settings1.Default.Northwind2Connect))
@@ -41,29 +40,39 @@ order by 1,2";
 
     private static void GetCommandesFromDataReader(List<Client> clients, SqlDataReader reader)
     {
-        string customerid = (string)reader["customerid"];
+        string idcustomer = (string)reader["customerid"];
 
         // Si l'id de la région courante est différent de celui de la dernière région de 
         // la liste, on crée un nouvel objet Region
-        Client r = null;
-        if (clients.Count == 0 || clients[clients.Count - 1].customerid != customerid)
+        Client cli = null;
+        if (clients.Count == 0 || clients[clients.Count - 1].customerid != idcustomer)
         {
-            r = new Client();
-            r.customerid = (string)reader["customerid"];
-            r.companyname = (string)reader["CompanyName"];
-            r.commandes = new List<Command>();
-            clients.Add(r);
+            cli = new Client();
+            cli.customerid = (string)reader["customerid"];
+            cli.companyname = (string)reader["CompanyName"];
+            cli.commandes = new List<Command>();
+            clients.Add(cli);
         }
-        else r = clients[clients.Count - 1];
+        else cli = clients[clients.Count - 1];
 
         // Création du territoire et association à la région
-        Command t = new Command();
-        t.orderid = (string)reader["OrderId"];
-        t.productid = (int)reader["ProductId"];
-        t.orderdate = (DateTime)reader["OrderDate"];
-        t.shippeddate = (DateTime)reader["shippeddate"];
-        t.freight = (decimal)reader["Freight"];
-        r.commandes.Add(t);
+       
+        if (reader["OrderId"] != DBNull.Value)
+        {
+            Command com = new Command();
+            com.orderid = (int)reader["OrderId"];
+            com.productid = (int)reader["ProductId"];
+            com.orderdate = (DateTime)reader["OrderDate"];
+            if (reader["shippeddate"] != DBNull.Value)
+            {
+                com.shippeddate = (DateTime)reader["shippeddate"];
+
+            }
+            com.freight = (decimal)reader["Freight"];
+            cli.commandes.Add(com);
+        }
+
+       
 
 
     }
@@ -72,14 +81,14 @@ order by 1,2";
     //    var list = new List<Customer>();
     //    var cmd = new SqlCommand();
     //    cmd.CommandText = @"select C.CustomerId, C.CompanyName,
-				//O.OrderId, OrderDate, ShippedDate, Freight,
-				//count(D.ProductId) ItemsCount,
-				//SUM(D.Quantity * D.UnitPrice) Total
-				//from Customer C
-				//left outer join Orders O on C.CustomerId = O.CustomerId
-				//inner join OrderDetail D on O.OrderId = D.OrderId
-				//group by C.CustomerId, C.CompanyName, O.OrderId, OrderDate, ShippedDate, Freight
-				//order by C.CustomerId, O.OrderId";
+    //O.OrderId, OrderDate, ShippedDate, Freight,
+    //count(D.ProductId) ItemsCount,
+    //SUM(D.Quantity * D.UnitPrice) Total
+    //from Customer C
+    //left outer join Orders O on C.CustomerId = O.CustomerId
+    //inner join OrderDetail D on O.OrderId = D.OrderId
+    //group by C.CustomerId, C.CompanyName, O.OrderId, OrderDate, ShippedDate, Freight
+    //order by C.CustomerId, O.OrderId";
 
     //    using (var conn = new SqlConnection(_connectString))
     //    {

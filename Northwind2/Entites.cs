@@ -46,13 +46,14 @@ namespace Northwind2
     
         public string customerid { get; set; }
         public string companyname { get; set; }
+        [Display(ShortName = "None")]
         public List<Command> commandes { get; set; }
     }
 
     public class Command
     {
 
-        public string orderid { get; set; }
+        public int orderid { get; set; }
         public DateTime orderdate { get; set; }
         public DateTime shippeddate{ get; set;}
         public Decimal freight { get; set; }
