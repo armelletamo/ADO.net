@@ -7,77 +7,122 @@ using System.Data.SqlClient;
 public class Contexte
 {
 
-//    public static List<Client> GetClientsCommandes(int i)
-//    {
-//        var Clients = new List<Client>();
+    public static List<Client> GetClientsCommandes()
+    {
+        var Clients = new List<Client>();
 
-//        var cmd1 = new SqlCommand();
-//        cmd1.CommandText = @"select  od.ProductId,c.customerid, c.CompanyName,
-// o.OrderId, o.OrderDate, o.shippeddate, o.Freight, isnull(sum(od.Quantity*(1-od.Discount)*UnitPrice),0) MontantTotal
-//from Customer c
-//left outer join Orders o on o.CustomerId=c.CustomerId
-//left outer join OrderDetail od on od.OrderId=o.OrderId
-// where od.productid=@productid
-//group by od.ProductId,c.customerid, c.CompanyName,
-// o.OrderId, o.OrderDate, o.shippeddate, o.Freight
-//order by 1,2";
+        var cmd1 = new SqlCommand();
+        cmd1.CommandText = @"select  od.ProductId,c.customerid, c.CompanyName,
+ o.OrderId, o.OrderDate, o.shippeddate, o.Freight, isnull(sum(od.Quantity*(1-od.Discount)*UnitPrice),0) MontantTotal
+from Customer c
+left outer join Orders o on o.CustomerId=c.CustomerId
+left outer join OrderDetail od on od.OrderId=o.OrderId
 
-//        var param = new SqlParameter
-//        {
-//            SqlDbType = SqlDbType.Int,
-//            ParameterName = "@productid",
-//            Value = i
-//        };
-//        // Ajout à la collection des paramètres de la commande
-//        cmd1.Parameters.Add(param);
+group by od.ProductId,c.customerid, c.CompanyName,
+ o.OrderId, o.OrderDate, o.shippeddate, o.Freight
+order by 1,2";
+
+        using (var cnx1 = new SqlConnection(Settings1.Default.Northwind2Connect))
+        {
+            cmd1.Connection = cnx1;
+            cnx1.Open();
+
+            using (SqlDataReader sdr1 = cmd1.ExecuteReader())
+            {
+                while (sdr1.Read())
+                {
+                    GetCommandesFromDataReader(Clients, sdr1);
+
+                }
+            }
+        }
+        return Clients;
+    }
+
+    private static void GetCommandesFromDataReader(List<Client> clients, SqlDataReader reader)
+    {
+        string customerid = (string)reader["customerid"];
+
+        // Si l'id de la région courante est différent de celui de la dernière région de 
+        // la liste, on crée un nouvel objet Region
+        Client r = null;
+        if (clients.Count == 0 || clients[clients.Count - 1].customerid != customerid)
+        {
+            r = new Client();
+            r.customerid = (string)reader["customerid"];
+            r.companyname = (string)reader["CompanyName"];
+            r.commandes = new List<Command>();
+            clients.Add(r);
+        }
+        else r = clients[clients.Count - 1];
+
+        // Création du territoire et association à la région
+        Command t = new Command();
+        t.orderid = (string)reader["OrderId"];
+        t.productid = (int)reader["ProductId"];
+        t.orderdate = (DateTime)reader["OrderDate"];
+        t.shippeddate = (DateTime)reader["shippeddate"];
+        t.freight = (decimal)reader["Freight"];
+        r.commandes.Add(t);
 
 
+    }
+    //public static IList<Customer> GetClientsCommandes()
+    //{
+    //    var list = new List<Customer>();
+    //    var cmd = new SqlCommand();
+    //    cmd.CommandText = @"select C.CustomerId, C.CompanyName,
+				//O.OrderId, OrderDate, ShippedDate, Freight,
+				//count(D.ProductId) ItemsCount,
+				//SUM(D.Quantity * D.UnitPrice) Total
+				//from Customer C
+				//left outer join Orders O on C.CustomerId = O.CustomerId
+				//inner join OrderDetail D on O.OrderId = D.OrderId
+				//group by C.CustomerId, C.CompanyName, O.OrderId, OrderDate, ShippedDate, Freight
+				//order by C.CustomerId, O.OrderId";
 
-//        using (var cnx1 = new SqlConnection(Settings1.Default.Northwind2Connect))
-//        {
-//            cmd1.Connection = cnx1;
-//            cnx1.Open();
+    //    using (var conn = new SqlConnection(_connectString))
+    //    {
+    //        cmd.Connection = conn;
+    //        conn.Open();
 
-//            using (SqlDataReader sdr1 = cmd1.ExecuteReader())
-//            {
-//                while (sdr1.Read())
-//                {
-//                    GetCommandesFromDataReader(Clients, sdr1);
-                   
-//                }
-//            }
-//        }
-//        return Clients;
-//    }
+    //        using (SqlDataReader reader = cmd.ExecuteReader())
+    //        {
+    //            while (reader.Read())
+    //            {
+    //                string idClient = (string)reader["CustomerId"];
 
-//    private static void GetCommandesFromDataReader(List<Client> clients, SqlDataReader reader)
-//    {
-//        string customerid = (string)reader["customerid"];
+    //                // Si l'id du client courant est différent de celui du dernier
+    //                // client de la liste, on crée un nouvel objet Client
+    //                Customer cli = null;
+    //                if (list.Count == 0 || list[list.Count - 1].CustomerId != idClient)
+    //                {
+    //                    cli = new Customer();
+    //                    cli.CustomerId = idClient;
+    //                    cli.CompanyName = (string)reader["CompanyName"];
+    //                    cli.Orders = new List<Order>();
+    //                    list.Add(cli);
+    //                }
+    //                else
+    //                    cli = list[list.Count - 1];
 
-//        // Si l'id de la région courante est différent de celui de la dernière région de 
-//        // la liste, on crée un nouvel objet Region
-//       Client r = null;
-//        if (clients.Count == 0 || clients[clients.Count - 1].customerid != customerid)
-//        {
-//            r = new Client();
-//            r.customerid = (string)reader["customerid"];
-//            r.companyname = (string)reader["CompanyName"];
-//            r.commandes = new List<Command>();
-//            clients.Add(r);
-//        }
-//        else r = clients[clients.Count - 1];
+    //                // Création de la commande
+    //                Order com = new Order();
+    //                com.OrderId = (int)reader["OrderId"];
+    //                com.OrderDate = (DateTime)reader["OrderDate"];
+    //                if (reader["ShippedDate"] != DBNull.Value)
+    //                    com.ShippedDate = (DateTime)reader["ShippedDate"];
+    //                com.ItemsCount = (int)reader["ItemsCount"];
+    //                com.Total = (decimal)reader["Total"];
+    //                com.Freight = (decimal)reader["Freight"];
 
-//        // Création du territoire et association à la région
-//        Command t = new Command();
-//        t.orderid = (string)reader["OrderId"];
-//        t.productid = (int)reader["ProductId"];
-//        t.orderdate = (DateTime)reader["OrderDate"];
-//        t.shippeddate = (DateTime)reader["shippeddate"];
-//        t.freight = (decimal)reader["Freight"];
-//        r.commandes.Add(t);
+    //                cli.Orders.Add(com);
+    //            }
+    //        }
+    //    }
 
-        
-//        }
+    //    return list;
+    //}
 
     public static IList<string> GetPaysFournisseurs()
     {

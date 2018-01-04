@@ -31,12 +31,18 @@ namespace Exercices
             Page Produits = new PageProduits();
             app.AddPage(Produits);
 
+            Page ClientCommande = new Client_Commande();
+            app.AddPage(ClientCommande);
+
+
             // Affichage de la page d'accueil
             app.NavigateTo(Accueil);
            
             app.NavigateTo(Fournisseur);
 
             app.NavigateTo(Produits);
+
+            app.NavigateTo(ClientCommande);
 
             app.Run();
 

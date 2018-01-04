@@ -10,43 +10,24 @@ namespace Northwind2
     internal class Client_Commande : Page
 
     {
+        private IList<Client> _clients;
+        public Client_Commande() : base("Clients et commandes")
+        {
+
+        }
+
         public override void Display()
         {
-            throw new NotImplementedException();
+            // Affichage de la liste des clients
+            _clients = Contexte.GetClientsCommandes();
+            ConsoleTable.From(_clients).Display("clients");
+
+            // Affichage de la liste des commandes du client sélectionné
+            string id = Input.Read<string>("De quel client souhaitez-vous afficher la liste des commandes ? ");
+            var commandes = _clients.Where(c => c.customerid == id).Select(c => c.commandes).FirstOrDefault();
+            ConsoleTable.From(commandes).Display("commandes");
         }
-
-        public abstract class Page
-        {
-            /// <summary>
-            /// Titre de la page
-            /// </summary>
-            public string Title { get; private set; }
-
-            // Constructeur
-            public Page(string title)
-            {
-                Title = title;
-            }
-
-            /// <summary>
-            /// Affiche la page
-            /// </summary>
-            public abstract void Display();
-        }
-
-
-        //public string ClientsCommandes { get; private set; }
-
-        //// Constructeur
-        //public  ClientsCommandes(string title)
-        //{
-        //    ClientsCommandes = title;
-        //}
-
-        //public override void Display()
-        //{
-
-        //}
+        
 
     }
 }
