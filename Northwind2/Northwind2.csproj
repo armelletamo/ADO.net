@@ -46,6 +46,7 @@
     <Compile Include="Contexte.cs" />
     <Compile Include="Entites.cs" />
     <Compile Include="Northwind2App.cs" />
+    <Compile Include="Pages\Client-Commande.cs" />
     <Compile Include="Pages\PageAccueil.cs" />
     <Compile Include="Pages\PageFournisseur.cs" />
     <Compile Include="Pages\PageProduits.cs" />

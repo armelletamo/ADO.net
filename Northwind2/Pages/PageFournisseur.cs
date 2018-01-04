@@ -35,7 +35,7 @@ namespace Northwind2
             string pays;
             Console.WriteLine("quel pays ? ");
             pays = Console.ReadLine();
-            List<Entites> liste2 = Contexte.GetFournisseurs(pays);
+            IList<Entites> liste2 = Contexte.GetFournisseurs(pays);
             ConsoleTable.From(liste2, "Fournisseur").Display("Fournisseurs");
 
         }

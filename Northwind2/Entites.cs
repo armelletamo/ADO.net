@@ -41,15 +41,15 @@ namespace Northwind2
     //    public int UnitsInStock { get; set; }
     //}
 
-    public class client
+    public class Client
     {
     
         public string customerid { get; set; }
         public string companyname { get; set; }
-        public List<command> commandes { get; set; }
+        public List<Command> commandes { get; set; }
     }
 
-    public class command
+    public class Command
     {
 
         public string orderid { get; set; }

@@ -11,8 +11,8 @@ namespace Northwind2
     class PageProduits : MenuPage
     {
         Produit Produit = new Produit();
-        List<Produit> listeProduit;
-        List<categorie> listeCategorie;
+        IList<Produit> listeProduit;
+        IList<categorie> listeCategorie;
 
         public PageProduits() : base("Page Produits", false)
         {

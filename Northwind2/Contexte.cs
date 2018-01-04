@@ -7,53 +7,79 @@ using System.Data.SqlClient;
 public class Contexte
 {
 
-    public static List<client> GetClientsCommandes(int i)
-    {
-        var clients = new List<client>();
+//    public static List<Client> GetClientsCommandes(int i)
+//    {
+//        var Clients = new List<Client>();
 
-        var cmd1 = new SqlCommand();
-        cmd1.CommandText = @"select  od.ProductId,c.customerid, c.CompanyName,
- o.OrderId, o.OrderDate, o.Freight, sum(od.Quantity*(1-od.Discount)*UnitPrice) MontantTotal
-from Customer c
-inner join Orders o on o.CustomerId=c.CustomerId
-inner join OrderDetail od on od.OrderId=o.OrderId
- where od.productid=@productid
-group by od.ProductId,c.customerid, c.CompanyName,
- o.OrderId, o.OrderDate, o.Freight";
+//        var cmd1 = new SqlCommand();
+//        cmd1.CommandText = @"select  od.ProductId,c.customerid, c.CompanyName,
+// o.OrderId, o.OrderDate, o.shippeddate, o.Freight, isnull(sum(od.Quantity*(1-od.Discount)*UnitPrice),0) MontantTotal
+//from Customer c
+//left outer join Orders o on o.CustomerId=c.CustomerId
+//left outer join OrderDetail od on od.OrderId=o.OrderId
+// where od.productid=@productid
+//group by od.ProductId,c.customerid, c.CompanyName,
+// o.OrderId, o.OrderDate, o.shippeddate, o.Freight
+//order by 1,2";
 
-        var param = new SqlParameter
-        {
-            SqlDbType = SqlDbType.Int,
-            ParameterName = "@productid",
-            Value = i
-        };
-        // Ajout à la collection des paramètres de la commande
-        cmd1.Parameters.Add(param);
+//        var param = new SqlParameter
+//        {
+//            SqlDbType = SqlDbType.Int,
+//            ParameterName = "@productid",
+//            Value = i
+//        };
+//        // Ajout à la collection des paramètres de la commande
+//        cmd1.Parameters.Add(param);
 
 
 
-        using (var cnx1 = new SqlConnection(Settings1.Default.Northwind2Connect))
-        {
-            cmd1.Connection = cnx1;
-            cnx1.Open();
+//        using (var cnx1 = new SqlConnection(Settings1.Default.Northwind2Connect))
+//        {
+//            cmd1.Connection = cnx1;
+//            cnx1.Open();
 
-            using (SqlDataReader sdr1 = cmd1.ExecuteReader())
-            {
-                while (sdr1.Read())
-                {
-                    client Monobjet = new client();
-                    Monobjet.customerid = (string)sdr1["customerid"];
-                    Monobjet.companyname = (string)sdr1["CompanyName"];
-                    Monobjet.commandes = (int)sdr1["ProductId"];
+//            using (SqlDataReader sdr1 = cmd1.ExecuteReader())
+//            {
+//                while (sdr1.Read())
+//                {
+//                    GetCommandesFromDataReader(Clients, sdr1);
+                   
+//                }
+//            }
+//        }
+//        return Clients;
+//    }
 
-                    clients.Add(Monobjet);
-                }
-            }
-        }
-        return clients;
-    }
+//    private static void GetCommandesFromDataReader(List<Client> clients, SqlDataReader reader)
+//    {
+//        string customerid = (string)reader["customerid"];
 
-    public static List<string> GetPaysFournisseurs()
+//        // Si l'id de la région courante est différent de celui de la dernière région de 
+//        // la liste, on crée un nouvel objet Region
+//       Client r = null;
+//        if (clients.Count == 0 || clients[clients.Count - 1].customerid != customerid)
+//        {
+//            r = new Client();
+//            r.customerid = (string)reader["customerid"];
+//            r.companyname = (string)reader["CompanyName"];
+//            r.commandes = new List<Command>();
+//            clients.Add(r);
+//        }
+//        else r = clients[clients.Count - 1];
+
+//        // Création du territoire et association à la région
+//        Command t = new Command();
+//        t.orderid = (string)reader["OrderId"];
+//        t.productid = (int)reader["ProductId"];
+//        t.orderdate = (DateTime)reader["OrderDate"];
+//        t.shippeddate = (DateTime)reader["shippeddate"];
+//        t.freight = (decimal)reader["Freight"];
+//        r.commandes.Add(t);
+
+        
+//        }
+
+    public static IList<string> GetPaysFournisseurs()
     {
         var listPaysFournisseurs = new List<string>();
 
@@ -80,7 +106,7 @@ group by od.ProductId,c.customerid, c.CompanyName,
         return listPaysFournisseurs;
 
     }
-    public static List<Entites> GetFournisseurs(string p)
+    public static IList<Entites> GetFournisseurs(string p)
     {
         var Fournisseurs = new List<Entites>();
 
@@ -142,7 +168,7 @@ group by od.ProductId,c.customerid, c.CompanyName,
             return (int)cmd2.ExecuteScalar();
         }
     }
-    public static List<categorie> GetCatProduits()
+    public static IList<categorie> GetCatProduits()
     {
         var listcatproduits = new List<categorie>();
 
@@ -172,7 +198,7 @@ group by od.ProductId,c.customerid, c.CompanyName,
         return listcatproduits;
     }
 
-    public static List<Produit> GetListProduits(Guid c)
+    public static IList<Produit> GetListProduits(Guid c)
     {
         var listproduits = new List<Produit>();
 
@@ -183,7 +209,7 @@ group by od.ProductId,c.customerid, c.CompanyName,
                            where c.categoryid=@categoryid
                            order by 1";
 
-        var param = new SqlParameter
+        var param = new SqlParameter               // ceci est un initialiseur
         {
             SqlDbType = SqlDbType.UniqueIdentifier,
             ParameterName = "@categoryid",
