@@ -7,46 +7,46 @@ using System.Threading.Tasks;
 
 namespace Northwind2
 {
-//    internal class Client_Commande : Page
+    internal class Client_Commande : Page
 
-//    {
-//        public override void Display()
-//        {
-//            throw new NotImplementedException();
-//        }
+    {
+        public override void Display()
+        {
+            throw new NotImplementedException();
+        }
 
-//        public abstract class Page
-//        {
-//            /// <summary>
-//            /// Titre de la page
-//            /// </summary>
-//            public string Title { get; private set; }
+        public abstract class Page
+        {
+            /// <summary>
+            /// Titre de la page
+            /// </summary>
+            public string Title { get; private set; }
 
-//            // Constructeur
-//            public Page(string title)
-//            {
-//                Title = title;
-//            }
+            // Constructeur
+            public Page(string title)
+            {
+                Title = title;
+            }
 
-//            /// <summary>
-//            /// Affiche la page
-//            /// </summary>
-//            public abstract void Display();
-//        }
+            /// <summary>
+            /// Affiche la page
+            /// </summary>
+            public abstract void Display();
+        }
 
 
-//        //public string ClientsCommandes { get; private set; }
+        //public string ClientsCommandes { get; private set; }
 
-//        //// Constructeur
-//        //public  ClientsCommandes(string title)
-//        //{
-//        //    ClientsCommandes = title;
-//        //}
+        //// Constructeur
+        //public  ClientsCommandes(string title)
+        //{
+        //    ClientsCommandes = title;
+        //}
 
-//        //public override void Display()
-//        //{
+        //public override void Display()
+        //{
 
-//        //}
+        //}
 
-//    }
+    }
 }

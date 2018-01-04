@@ -87,20 +87,27 @@ namespace Northwind2Test
         [TestMethod()]
         public void SupprimerUnProduitTest()
         {
-            Produit p = new Produit();
-            var cheeses = Contexte.GetCatProduits()[4];
-            Guid idCateCheeses = cheeses.Categoryid;
-            var liste = Contexte.GetListProduits(idCateCheeses);
+            //Produit p = new Produit();
+            //var cheeses = Contexte.GetCatProduits()[4];
+            //Guid idCateCheeses = cheeses.Categoryid;
+            var liste = Contexte.GetCatProduits();
             for (int i = 0; i < liste.Count; i++)
-            {
-                if (liste[i].Name == "Nouveau produit")
+                if (liste[i].Description == "Cheeses")
                 {
+                    Guid idcate = liste[i].Categoryid;
+                    var liste2 = Contexte.GetListProduits(idcate);
+                    for (int y = 0; y < liste.Count; y++)
+                    {
+                        if (liste2[i].Name == "Nouveau produit")
+                        {
 
-                    int id= liste[i].Productid;
-                    Contexte.SupprimerUnProduit(id);
-                    Assert.AreEqual(10, Contexte.GetListProduits(idCateCheeses).Count);
+                            int id = liste2[i].Productid;
+                            Contexte.SupprimerUnProduit(id);
+                            Assert.AreEqual(10, Contexte.GetListProduits(idcate).Count);
+                        }
+                    }
                 }
-            }
+            
         }
     }
 }
