@@ -206,8 +206,7 @@ public class Contexte
         cmd.CommandText = @"SELECT p.Productid, p.Name, p.UnitPrice, p.UnitsInStock, p.supplierid
                            from product p
                            inner join category c on p.categoryid=c.categoryid
-                           where c.categoryid=@categoryid
-                           order by 1";
+                           where c.categoryid=@categoryid";
 
         var param = new SqlParameter               // ceci est un initialiseur
         {
