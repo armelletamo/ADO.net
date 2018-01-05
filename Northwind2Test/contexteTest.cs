@@ -6,12 +6,12 @@ using Northwind2;
 namespace Northwind2Test
 {
     [TestClass()]
-    public class contexteTest
+    public class TestsContexte1
     {
         [TestMethod()]
         public void GetPaysFournisseursTest()
         {
-           var liste = Contexte.GetPaysFournisseurs();
+            var liste = Northwind2App.DataContext.GetPaysFournisseurs();
             int index = liste.Count;
             Assert.AreEqual(16, index);
             Assert.AreEqual("USA", liste[index - 1]);
@@ -21,10 +21,10 @@ namespace Northwind2Test
         [TestMethod()]
         public void GetFournisseursTest()
         {
-            var liste = Contexte.GetFournisseurs("Japan");
-            
-            Assert.AreEqual(4, Contexte.GetFournisseurs("Japan")[0].SupplierId);
-            Assert.AreEqual(6, Contexte.GetFournisseurs("Japan")[1].SupplierId);
+            var liste = Northwind2App.DataContext.GetFournisseurs("Japan");
+
+            Assert.AreEqual(4, liste[0].SupplierId);
+            Assert.AreEqual(6, liste[1].SupplierId);
         }
 
         //Vérifier que le Royaume Uni propose 7 produits
@@ -32,31 +32,32 @@ namespace Northwind2Test
         public void GetNbProduitsTest()
 
         {
-            
-            Assert.AreEqual(7, Contexte.GetNbProduits("UK"));
+
+            Assert.AreEqual(7, Northwind2App.DataContext.GetNbProduits("UK"));
         }
 
         //Vérifier qu’on récupère 8 catégories de produits et que la dernière est nommée « Seafood »
         [TestMethod()]
         public void GetCatProduitsTest()
         {
-            var liste = Contexte.GetCatProduits();
+            var liste = Northwind2App.DataContext.GetCatProduits();
             Assert.AreEqual(8, liste.Count);
-            Assert.AreEqual("Seafood", liste[liste.Count-1].Name);
+            Assert.AreEqual("Seafood", liste[liste.Count - 1].Name);
         }
 
         //Vérifier qu’il y a 12 produits dans la catégorie Seafood et que le 7ème est le N° 40
         [TestMethod()]
         public void GetListProduitsTest()
         {
-            
-            var liste = Contexte.GetCatProduits();
+
+            var liste = Northwind2App.DataContext.GetCatProduits();
             for (int i = 0; i < liste.Count; i++)
             {
                 if (liste[i].Name == "Seafood")
                 {
-                    Assert.AreEqual(12, Contexte.GetListProduits(liste[i].Categoryid).Count);
-                    Assert.AreEqual(40, Contexte.GetListProduits(liste[i].Categoryid).ElementAt(6).Productid);
+                    var x = Northwind2App.DataContext.GetListProduits(liste[i].Categoryid);
+                    Assert.AreEqual(12, x.Count);
+                    Assert.AreEqual(40, x.ElementAt(6).Productid);
                 }
             }
 
@@ -68,9 +69,9 @@ namespace Northwind2Test
         //Cheeses et vérifier qu’il y a désormais 11 produits dans cette catégorie
         public void AjouterModifierProduitTest()
         {
-            Produit p = new Produit();
+            Product p = new Product();
 
-            var liste = Contexte.GetCatProduits();
+            var liste = Northwind2App.DataContext.GetCatProduits();
             for (int i = 0; i < liste.Count; i++)
             {
                 if (liste[i].Description == "Cheeses")
@@ -80,8 +81,9 @@ namespace Northwind2Test
                     p.Supplierid = 2;
                     p.UnitPrice = 2.5m;
                     p.UnitsInStock = 23;
-                    Contexte.AjouterModifierProduit(p, Contexte.choix.creer);
-                    Assert.AreEqual(11, Contexte.GetListProduits(liste[i].Categoryid).Count);
+                    var c = choix.creer;
+                    Northwind2App.DataContext.AjouterModifierProduit(p,c);
+                    Assert.AreEqual(11, Northwind2App.DataContext.GetListProduits(liste[i].Categoryid).Count);
                 }
             }
 
@@ -94,24 +96,24 @@ namespace Northwind2Test
             //Produit p = new Produit();
             //var cheeses = Contexte.GetCatProduits()[4];
             //Guid idCateCheeses = cheeses.Categoryid;
-            var liste = Contexte.GetCatProduits();
+            var liste = Northwind2App.DataContext.GetCatProduits();
             for (int i = 0; i < liste.Count; i++)
                 if (liste[i].Description == "Cheeses")
                 {
                     Guid idcate = liste[i].Categoryid;
-                    var liste2 = Contexte.GetListProduits(idcate);
+                    var liste2 = Northwind2App.DataContext.GetListProduits(idcate);
                     for (int y = 0; y < liste.Count; y++)
                     {
                         if (liste2[i].Name == "Nouveau produit")
                         {
 
                             int id = liste2[i].Productid;
-                            Contexte.SupprimerUnProduit(id);
-                            Assert.AreEqual(10, Contexte.GetListProduits(idcate).Count);
+                            Northwind2App.DataContext.SupprimerUnProduit(id);
+                            Assert.AreEqual(10, liste2.Count);
                         }
                     }
                 }
-            
+
         }
     }
 }

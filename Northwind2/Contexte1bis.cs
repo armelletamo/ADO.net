@@ -4,12 +4,12 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 
-public class Contexte
+public class Contexte1 : IDataContext
 {
-
-    public static List<Client> GetClientsCommandes()
+    
+    public IList<customer> GetClientsCommandes()
     {
-        var Clients = new List<Client>();
+        var Clients = new List<customer>();
 
         var cmd1 = new SqlCommand();
         cmd1.CommandText = @"select  c.customerid, od.orderid, c.CompanyName, od.productid,
@@ -38,29 +38,29 @@ order by 1,2";
         return Clients;
     }
 
-    private static void GetCommandesFromDataReader(List<Client> clients, SqlDataReader reader)
+    public void GetCommandesFromDataReader(List<customer> clients, SqlDataReader reader)
     {
         string idcustomer = (string)reader["customerid"];
 
         // Si l'id de la région courante est différent de celui de la dernière région de 
         // la liste, on crée un nouvel objet Region
-        Client cli = null;
+        customer cli = null;
         if (clients.Count == 0 || clients[clients.Count - 1].customerid != idcustomer)
         {
-            cli = new Client();
+            cli = new customer();
             cli.customerid = (string)reader["customerid"];
             cli.companyname = (string)reader["CompanyName"];
-            cli.commandes = new List<Command>();
+            cli.commandes = new List<orders>();
             clients.Add(cli);
         }
         else cli = clients[clients.Count - 1];
 
         // Création du territoire et association à la région
-       
+
         if (reader["OrderId"] != DBNull.Value)
         {
-            Command com = new Command();
-            com.orderid = (int)reader["OrderId"];
+            orders com = new orders();
+            com.ordersid = (int)reader["OrderId"];
             com.productid = (int)reader["ProductId"];
             com.orderdate = (DateTime)reader["OrderDate"];
             if (reader["shippeddate"] != DBNull.Value)
@@ -72,7 +72,7 @@ order by 1,2";
             cli.commandes.Add(com);
         }
 
-       
+
 
 
     }
@@ -133,7 +133,7 @@ order by 1,2";
     //    return list;
     //}
 
-    public static IList<string> GetPaysFournisseurs()
+    public IList<string> GetPaysFournisseurs()
     {
         var listPaysFournisseurs = new List<string>();
 
@@ -160,9 +160,9 @@ order by 1,2";
         return listPaysFournisseurs;
 
     }
-    public static IList<Entites> GetFournisseurs(string p)
+    public IList<Supplier> GetFournisseurs(string p)
     {
-        var Fournisseurs = new List<Entites>();
+        var Fournisseurs = new List<Supplier>();
 
         var cmd1 = new SqlCommand();
         cmd1.CommandText = @"SELECT S.SupplierID, S.CompanyName, A.Country
@@ -191,7 +191,7 @@ order by 1,2";
             {
                 while (sdr1.Read())
                 {
-                    Entites Monobjet = new Entites();
+                    Supplier Monobjet = new Supplier();
                     Monobjet.SupplierId = (int)sdr1["SupplierId"];
                     Monobjet.CompanyName = (string)sdr1["CompanyName"];
                     //Monobjet.Country = (string)sdr1["Country"];
@@ -202,7 +202,7 @@ order by 1,2";
         return Fournisseurs;
     }
 
-    public static int GetNbProduits(string py)
+    public int GetNbProduits(string py)
     {
         var cmd2 = new SqlCommand();
         cmd2.CommandText = @"select  dbo.ufn_GetNbProduits (@country)";
@@ -222,9 +222,9 @@ order by 1,2";
             return (int)cmd2.ExecuteScalar();
         }
     }
-    public static IList<categorie> GetCatProduits()
+    public IList<Category> GetCatProduits()
     {
-        var listcatproduits = new List<categorie>();
+        var listcatproduits = new List<Category>();
 
         var cmd3 = new SqlCommand();
         cmd3.CommandText = @"select CategoryId, Name, Description
@@ -240,7 +240,7 @@ order by 1,2";
             {
                 while (sdr3.Read())
                 {
-                    categorie MaCat = new categorie();
+                    Category MaCat = new Category();
                     MaCat.Categoryid = (Guid)sdr3["CategoryId"];
                     MaCat.Name = (string)sdr3["Name"];
                     MaCat.Description = (string)sdr3["Description"];
@@ -252,9 +252,9 @@ order by 1,2";
         return listcatproduits;
     }
 
-    public static IList<Produit> GetListProduits(Guid c)
+    public IList<Product> GetListProduits(Guid c)
     {
-        var listproduits = new List<Produit>();
+        var listproduits = new List<Product>();
 
         var cmd = new SqlCommand();
         cmd.CommandText = @"SELECT p.Productid, p.Name, p.UnitPrice, p.UnitsInStock, p.supplierid
@@ -282,7 +282,7 @@ order by 1,2";
             {
                 while (sdr.Read())
                 {
-                    Produit MonProduit = new Produit();
+                    Product MonProduit = new Product();
                     MonProduit.Productid = (int)sdr["Productid"];
                     MonProduit.Name = (string)sdr["Name"];
                     MonProduit.UnitPrice = (decimal)sdr["UnitPrice"];
@@ -295,13 +295,12 @@ order by 1,2";
         return listproduits;
     }
 
-    public enum choix { creer, modifier }
-
-
-    public static void AjouterModifierProduit(Produit p, choix c)
+    public void AjouterModifierProduit(Product p, choix c)
     {
+
         if (c == choix.creer)
         {
+
             var cmd = new SqlCommand();
 
             cmd.CommandText = @"insert product (categoryid, Name, supplierID, unitprice, unitsinstock) 
@@ -419,7 +418,7 @@ values (@categoryid, @Name, @supplierID, @unitprice, @unitsinstock)
 
         }
     }
-    public static void SupprimerUnProduit(int id)
+    public void SupprimerUnProduit(int id)
     {
         var cmd = new SqlCommand();
         cmd.CommandText = @"delete from Product where ProductId = @id";
@@ -438,7 +437,13 @@ values (@categoryid, @Name, @supplierID, @unitprice, @unitsinstock)
         }
 
     }
+    public int EnregistrerModifsProduits()
+    {
+        return 0;
+    }
 }
+
+
 
 
 

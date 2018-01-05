@@ -10,7 +10,7 @@ namespace Northwind2
     internal class Client_Commande : Page
 
     {
-        private IList<Client> _clients;
+        private IList<customer> _clients;
         public Client_Commande() : base("Clients et commandes")
         {
 
@@ -19,7 +19,7 @@ namespace Northwind2
         public override void Display()
         {
             // Affichage de la liste des clients
-            _clients = Contexte.GetClientsCommandes();
+            _clients = Northwind2App.DataContext.GetClientsCommandes();
             ConsoleTable.From(_clients).Display("clients");
 
             // Affichage de la liste des commandes du client sélectionné

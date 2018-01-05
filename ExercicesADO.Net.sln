@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TData", "..\Outils\Data\TDa
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Northwind2Test", "Northwind2Test\Northwind2Test.csproj", "{7F6EA06B-ECA2-461C-B0BF-28FB3AA03F73}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFDBFirst", "EFDBFirst\EFDBFirst.csproj", "{9B403F86-5FD6-43E0-B8BD-2FBC4638FB22}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{7F6EA06B-ECA2-461C-B0BF-28FB3AA03F73}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F6EA06B-ECA2-461C-B0BF-28FB3AA03F73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F6EA06B-ECA2-461C-B0BF-28FB3AA03F73}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B403F86-5FD6-43E0-B8BD-2FBC4638FB22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B403F86-5FD6-43E0-B8BD-2FBC4638FB22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B403F86-5FD6-43E0-B8BD-2FBC4638FB22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B403F86-5FD6-43E0-B8BD-2FBC4638FB22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

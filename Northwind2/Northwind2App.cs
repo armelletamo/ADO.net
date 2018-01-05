@@ -1,29 +1,44 @@
-﻿using Outils.TConsole;
+﻿using Northwind2;
+using Outils.TConsole;
 
-public class Northwind2App : ConsoleApplication
+namespace Northwind2
 {
-    private static Northwind2App _instance;
-
-    /// <summary>
-    /// Obtient l'instance unique de l'application
-    /// </summary>
-    public static Northwind2App Instance
+    public class Northwind2App : ConsoleApplication
     {
-        get
+        private static Northwind2App _instance;
+        private static IDataContext _dataContext;
+
+        /// <summary>
+        /// Obtient l'instance unique de l'application
+        /// </summary>
+        public static Northwind2App Instance
         {
-            if (_instance == null)
-                _instance = new Northwind2App();
+            get
+            {
+                if (_instance == null)
+                    _instance = new Northwind2App();
 
-            return _instance;
+                return _instance;
+            }
         }
-    }
+        public static IDataContext DataContext
+        {
+            get
+            {
+                if (_dataContext == null)
+                    _dataContext = new Contexte3();
+                return _dataContext;
+            }
+       
 
-    // Constructeur
-    public Northwind2App()
-    {
-        // Définition des options de menu à ajouter dans tous les menus de pages
-        MenuPage.DefaultOptions.Add(
-           new Option("a", "Accueil", () => _instance.NavigateHome()));
+        }
+        // Constructeur
+        public Northwind2App()
+        {
+            // Définition des options de menu à ajouter dans tous les menus de pages
+            MenuPage.DefaultOptions.Add(
+               new Option("a", "Accueil", () => _instance.NavigateHome()));
+        }
     }
 }
 

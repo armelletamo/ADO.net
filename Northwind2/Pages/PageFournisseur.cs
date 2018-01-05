@@ -24,7 +24,7 @@ namespace Northwind2
             string pays;
             Console.WriteLine("quel pays ? ");
             pays = Console.ReadLine();
-            int nombre = Contexte.GetNbProduits(pays);
+            int nombre = Northwind2App.DataContext.GetNbProduits(pays);
             //Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine( nombre.ToString() + "produits");
 
@@ -35,14 +35,14 @@ namespace Northwind2
             string pays;
             Console.WriteLine("quel pays ? ");
             pays = Console.ReadLine();
-            IList<Entites> liste2 = Contexte.GetFournisseurs(pays);
+            IList<Supplier> liste2 = Northwind2App.DataContext.GetFournisseurs(pays);
             ConsoleTable.From(liste2, "Fournisseur").Display("Fournisseurs");
 
         }
 
         private void AfficherListePaysFournisseurs()
         {
-            var liste = Contexte.GetPaysFournisseurs();
+            var liste = Northwind2App.DataContext.GetPaysFournisseurs();
             ConsoleTable.From(liste, "Pays").Display("Pays");
 
         }

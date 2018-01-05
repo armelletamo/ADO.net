@@ -10,9 +10,9 @@ namespace Northwind2
 {
     class PageProduits : MenuPage
     {
-        Produit Produit = new Produit();
-        IList<Produit> listeProduit;
-        IList<categorie> listeCategorie;
+        Product Produit = new Product();
+        IList<Product> listeProduit;
+        IList<Category> listeCategorie;
 
         public PageProduits() : base("Page Produits", false)
         {
@@ -34,7 +34,7 @@ namespace Northwind2
             int i = Input.Read<int>("Id du produit à supprimer :");
             try
             {
-                Contexte.SupprimerUnProduit(i);
+                Northwind2App.DataContext.SupprimerUnProduit(i);
             }
             catch (SqlException e)
             {
@@ -61,7 +61,7 @@ namespace Northwind2
                 listeProduit = Contexte.GetListProduits(id);
                 */
             int idp = Input.Read<int>(" Saississez un l'id du produit à modifier: ");
-            Produit Produit = listeProduit.Where(p => p.Productid == idp).FirstOrDefault();
+            Product Produit = listeProduit.Where(p => p.Productid == idp).FirstOrDefault();
             Produit.Categoryid = id;
 
             Produit.Name = Input.Read<string>("Saissisez le nom du produit: ", Produit.Name);
@@ -70,14 +70,14 @@ namespace Northwind2
             Produit.UnitPrice = Input.Read<decimal>("Saissisez le prix unitaire du produit: ", Produit.UnitPrice);
             Produit.UnitsInStock = Input.Read<int>("Saissisez la quantité en stock du produit: ", Produit.UnitsInStock);
 
-            Contexte.choix m = Contexte.choix.modifier;
-            Contexte.AjouterModifierProduit(Produit, m);
+           
+            Northwind2App.DataContext.AjouterModifierProduit(Produit, choix.modifier);
             Output.WriteLine(ConsoleColor.Green, " Produit modifié avec succès ");
         }
 
         private void CréerProduit()
         {
-            var liste = Contexte.GetCatProduits();
+            var liste = Northwind2App.DataContext.GetCatProduits();
             ConsoleTable.From(liste, "categories").Display("categories");
 
 
@@ -87,8 +87,8 @@ namespace Northwind2
             Produit.UnitPrice = Input.Read<decimal>("Saissisez le prix unitaire du produit: ");
             Produit.UnitsInStock = Input.Read<int>("Saissisez la quantité en stock du produit: ");
 
-            Contexte.choix c = Contexte.choix.creer;
-            Contexte.AjouterModifierProduit(Produit, c);
+            
+            Northwind2App.DataContext.AjouterModifierProduit(Produit, choix.creer);
             Output.WriteLine(ConsoleColor.Green, " Produit créé avec succès ");
 
         }
@@ -98,11 +98,11 @@ namespace Northwind2
         private Guid AfficherCatProduits()
         {
             if (listeCategorie == null)
-                listeCategorie = Contexte.GetCatProduits();
+                listeCategorie = Northwind2App.DataContext.GetCatProduits();
             ConsoleTable.From(listeCategorie, "categories").Display("categories");
             Guid id = Input.Read<Guid>(" Saississez un id de categorie: ");
             if(listeProduit==null)
-                listeProduit = Contexte.GetListProduits(id);
+                listeProduit = Northwind2App.DataContext.GetListProduits(id);
             ConsoleTable.From(listeProduit, "liste de produits").Display(" produits");
             return id;
         }
